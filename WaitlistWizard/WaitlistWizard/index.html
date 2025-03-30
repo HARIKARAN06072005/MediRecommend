@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediRecommend | Smart Drug Recommendation System</title>
+  <link rel="stylesheet" href="static/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-clinic-medical"></i>
+        <h1>MediRecommend</h1>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <div class="card">
+          <div class="card-header">
+            <h2><i class="fas fa-pills"></i> Drug Recommendation System</h2>
+            <p class="subtitle">Get personalized medication suggestions based on your health profile</p>
+          </div>
+
+          <div class="card-body">
+            <form id="recommendationForm">
+              <div class="form-group">
+                <label for="healthProblem">
+                  <i class="fas fa-heartbeat"></i> Health Condition
+                  <span class="tooltip-icon" data-tooltip="Enter your primary health condition (e.g., hypertension, diabetes)">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                </label>
+                <input type="text" id="healthProblem" placeholder="Enter Health Problem" required autocomplete="off">
+                <span class="error-message" id="healthProblemError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="gender">
+                  <i class="fas fa-venus-mars"></i> Gender
+                  <span class="tooltip-icon" data-tooltip="Your biological sex is relevant for certain medication recommendations">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                </label>
+                <select id="gender" required>
+                  <option value="" disabled selected>Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <span class="error-message" id="genderError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="age">
+                  <i class="fas fa-birthday-cake"></i> Age
+                  <span class="tooltip-icon" data-tooltip="Medication dosage often depends on patient age">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                </label>
+                <input type="number" id="age" placeholder="Enter Age" min="0" max="120" required>
+                <span class="error-message" id="ageError"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="existingDrug">
+                  <i class="fas fa-prescription-bottle-alt"></i> Current Medication (Optional)
+                  <span class="tooltip-icon" data-tooltip="List current medications to check for potential interactions">
+                    <i class="fas fa-info-circle"></i>
+                  </span>
+                </label>
+                <input type="text" id="existingDrug" placeholder="Enter Existing Drug (Optional)" autocomplete="off">
+              </div>
+
+              <div class="button-group">
+                <button type="submit" id="recommendationBtn">
+                  <i class="fas fa-search-plus"></i> Get Recommendation
+                </button>
+                <button type="button" id="clearFormBtn">
+                  <i class="fas fa-undo"></i> Clear Form
+                </button>
+              </div>
+            </form>
+
+            <div class="loader" id="loader">
+              <div class="spinner"></div>
+              <p>Analyzing health data...</p>
+            </div>
+
+            <div class="output" id="output">
+              <!-- Results will be displayed here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Information card -->
+        <div class="info-card">
+          <h3><i class="fas fa-info-circle"></i> About MediRecommend</h3>
+          <p>MediRecommend provides medication suggestions based on your health information. This tool is for informational purposes only and should not replace professional medical advice.</p>
+          <p>Always consult with a healthcare provider before starting or changing medication.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2023 MediRecommend. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Contact Us</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="static/js/drugDatabase.js"></script>
+  <script src="static/js/app.js"></script>
+</body>
+</html>

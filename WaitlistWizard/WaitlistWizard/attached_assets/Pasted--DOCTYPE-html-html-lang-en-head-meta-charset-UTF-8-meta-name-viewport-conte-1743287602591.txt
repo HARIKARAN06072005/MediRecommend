@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drug Recommendation System</title>
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    /* Container Styling */
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      width: 450px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    /* Header Styling */
+    h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    /* Input and Button Styling */
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    input {
+      border: 2px solid #d1d8e0;
+      background: #ecf0f1;
+      outline: none;
+    }
+    input:focus {
+      border-color: #4facfe;
+    }
+    button {
+      background: linear-gradient(45deg, #4facfe, #00f2fe);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: transform 0.2s ease-in-out;
+    }
+    button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #00f2fe, #4facfe);
+    }
+    /* Output Styling */
+    .output {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #2c3e50;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Drug Recommendation System</h2>
+    <input type="text" id="healthProblem" placeholder="Enter Health Problem" />
+    <input type="text" id="gender" placeholder="Enter Gender (Male/Female)" />
+    <input type="number" id="age" placeholder="Enter Age" />
+    <input type="text" id="existingDrug" placeholder="Enter Existing Drug (Optional)" />
+    <button onclick="getRecommendation()">Get Recommendation</button>
+    <div class="output" id="output"></div>
+  </div>
+
+  <script>
+    const unsafeInteractions = {
+      "DrugA,DrugB": true,
+      "DrugB,DrugA": true,
+      "DrugC,DrugD": true,
+      "DrugD,DrugC": true
+    };
+    const safeAlternatives = {
+      "hypertension": "DRUGX",
+      "diabetes": "DRUGY",
+      "allergy": "DRUGZ",
+      "depression": "DRUGW",
+      "migraine": "DRUGV"
+    };
+    function predictDrug(healthProblem) {
+      switch (healthProblem.toLowerCase()) {
+        case "hypertension": return "DRUGA";
+        case "diabetes": return "DRUGB";
+        case "allergy": return "DRUGC";
+        case "depression": return "DRUGD";
+        case "migraine": return "DRUGE";
+        default: return "DRUGX";
+      }
+    }
+    function isDrugSafe(existingDrug, predictedDrug) {
+      return !unsafeInteractions[existingDrug + "," + predictedDrug];
+    }
+    function suggestAlternative(predictedDrug, healthProblem) {
+      let alternative = safeAlternatives[healthProblem.toLowerCase()];
+      return alternative && alternative !== predictedDrug ? alternative : "No alternative available";
+    }
+    function getDrugRecommendation(healthProblem, gender, age, existingDrug) {
+      let predictedDrug = predictDrug(healthProblem);
+      let safetyMessage = "";
+      if (existingDrug) {
+        safetyMessage = isDrugSafe(existingDrug.toUpperCase(), predictedDrug)
+          ? "The combination is safe to use"
+          : Warning! The combination is unsafe. Suggested Alternative: ${suggestAlternative(predictedDrug, healthProblem)};
+      } else {
+        safetyMessage = "No existing drug provided. Proceed with the recommended drug.";
+      }
+      return { predictedDrug, safetyMessage };
+    }
+    function getRecommendation() {
+      let healthProblem = document.getElementById("healthProblem").value.trim();
+      let gender = document.getElementById("gender").value.trim();
+      let age = document.getElementById("age").value.trim();
+      let existingDrug = document.getElementById("existingDrug").value.trim();
+      if (!healthProblem || !gender || !age) {
+        document.getElementById("output").innerText = "Please fill in all required fields.";
+        return;
+      }
+      let result = getDrugRecommendation(healthProblem, gender, parseFloat(age), existingDrug);
+      document.getElementById("output").innerHTML = `<p><strong>Recommended Drug:</strong> ${result.predictedDrug}</p>
+      <p><strong>Safety Message:</strong> ${result.safetyMessage}</p>`;
+    }
+  </script>
+</body>
+</html>

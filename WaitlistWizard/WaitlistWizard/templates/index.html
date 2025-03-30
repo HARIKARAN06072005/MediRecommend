@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediRecommend | Smart Drug Recommendation System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-container">
+    <header>
+      <div class="logo">
+        <i class="fas fa-clinic-medical"></i>
+        <h1>MediRecommend</h1>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <!-- Tab navigation -->
+        <div class="tab-navigation">
+          <button class="tab-btn active" data-tab="doctor-section">
+            <i class="fas fa-user-md"></i> For Doctors
+          </button>
+          <button class="tab-btn" data-tab="patient-section">
+            <i class="fas fa-user"></i> For Patients
+          </button>
+        </div>
+
+        <!-- Doctor Section -->
+        <div class="tab-content active" id="doctor-section">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-pills"></i> AI Drug Recommendation System</h2>
+              <p class="subtitle">Get AI-powered medication suggestions based on your patient's health profile</p>
+            </div>
+
+            <div class="card-body">
+              <form id="recommendationForm">
+                <div class="ai-badge">
+                  <i class="fas fa-robot"></i> AI-Powered Analysis
+                </div>
+                
+                <div class="form-group">
+                  <label for="healthProblem">
+                    <i class="fas fa-heartbeat"></i> Health Condition
+                    <span class="tooltip-icon" data-tooltip="Enter the primary health condition (e.g., hypertension, diabetes)">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </label>
+                  <div class="autocomplete-container">
+                    <input type="text" id="healthProblem" placeholder="Enter Health Problem" autocomplete="off">
+                    <div class="autocomplete-results" id="healthConditionResults"></div>
+                  </div>
+                  <span class="error-message" id="healthProblemError"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="symptomText">
+                    <i class="fas fa-comment-medical"></i> Symptom Description 
+                    <span class="tooltip-icon" data-tooltip="Describe the symptoms in natural language for AI analysis. The AI will suggest possible conditions.">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </label>
+                  <textarea id="symptomText" placeholder="Describe the symptoms in detail (e.g., 'Patient complains of persistent headaches, dizziness, and occasional chest pain...')"></textarea>
+                  <div class="symptom-analysis" id="symptomAnalysis">
+                    <!-- AI symptom analysis will appear here -->
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="gender">
+                    <i class="fas fa-venus-mars"></i> Gender
+                    <span class="tooltip-icon" data-tooltip="The biological sex is relevant for certain medication recommendations">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </label>
+                  <select id="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                  <span class="error-message" id="genderError"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="age">
+                    <i class="fas fa-birthday-cake"></i> Age
+                    <span class="tooltip-icon" data-tooltip="Medication dosage often depends on patient age">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </label>
+                  <input type="number" id="age" placeholder="Enter Age" min="0" max="120" required>
+                  <span class="error-message" id="ageError"></span>
+                </div>
+
+                <div class="form-group">
+                  <label for="existingDrug">
+                    <i class="fas fa-prescription-bottle-alt"></i> Current Medication (Optional)
+                    <span class="tooltip-icon" data-tooltip="List current medications to check for potential interactions">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </label>
+                  <div class="autocomplete-container">
+                    <input type="text" id="existingDrug" placeholder="Enter Existing Drug (Optional)" autocomplete="off">
+                    <div class="autocomplete-results" id="medicationResults"></div>
+                  </div>
+                </div>
+
+                <div class="button-group">
+                  <button type="submit" id="recommendationBtn">
+                    <i class="fas fa-brain"></i> Get AI Recommendation
+                  </button>
+                  <button type="button" id="analyzeSymptomBtn">
+                    <i class="fas fa-stethoscope"></i> Analyze Symptoms Only
+                  </button>
+                  <button type="button" id="clearFormBtn">
+                    <i class="fas fa-undo"></i> Clear Form
+                  </button>
+                </div>
+              </form>
+
+              <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <p>AI analyzing patient data...</p>
+              </div>
+
+              <div class="output" id="output">
+                <!-- Results will be displayed here -->
+              </div>
+              
+              <!-- AI Confidence Visualization -->
+              <div class="ai-confidence-visualization" id="aiConfidenceVisualization">
+                <!-- AI confidence scores will be visualized here -->
+              </div>
+              
+              <!-- Saved recommendations section -->
+              <div class="saved-recommendations" id="savedRecommendations">
+                <h3><i class="fas fa-bookmark"></i> Saved Recommendations</h3>
+                <div class="saved-recommendations-list" id="savedRecommendationsList">
+                  <!-- Saved items will appear here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Patient Section -->
+        <div class="tab-content" id="patient-section">
+          <div class="card">
+            <div class="card-header">
+              <h2><i class="fas fa-user-check"></i> Patient Medication Manager</h2>
+              <p class="subtitle">Track your medications and set reminders to never miss a dose</p>
+            </div>
+
+            <div class="card-body">
+              <!-- Medication Tracker -->
+              <div class="tracker-section">
+                <h3><i class="fas fa-clipboard-list"></i> My Medications</h3>
+                
+                <form id="medicationTrackerForm">
+                  <div class="form-group">
+                    <label for="medicationName">
+                      <i class="fas fa-prescription-bottle-alt"></i> Medication Name
+                    </label>
+                    <div class="autocomplete-container">
+                      <input type="text" id="medicationName" placeholder="Enter medication name" required autocomplete="off">
+                      <div class="autocomplete-results" id="patientMedicationResults"></div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="dosage">
+                      <i class="fas fa-tablets"></i> Dosage
+                    </label>
+                    <input type="text" id="dosage" placeholder="Example: 10mg, 1 tablet, etc." required>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group half">
+                      <label for="frequency">
+                        <i class="fas fa-clock"></i> Frequency
+                      </label>
+                      <select id="frequency" required>
+                        <option value="" disabled selected>How often?</option>
+                        <option value="once">Once daily</option>
+                        <option value="twice">Twice daily</option>
+                        <option value="three">Three times daily</option>
+                        <option value="four">Four times daily</option>
+                        <option value="asneeded">As needed</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group half">
+                      <label for="startDate">
+                        <i class="fas fa-calendar-day"></i> Start Date
+                      </label>
+                      <input type="date" id="startDate" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="notes">
+                      <i class="fas fa-sticky-note"></i> Notes (Optional)
+                    </label>
+                    <textarea id="notes" placeholder="Special instructions or notes"></textarea>
+                  </div>
+
+                  <div class="button-group">
+                    <button type="submit" id="addMedicationBtn">
+                      <i class="fas fa-plus-circle"></i> Add Medication
+                    </button>
+                    <button type="button" id="clearMedicationFormBtn">
+                      <i class="fas fa-undo"></i> Clear Form
+                    </button>
+                  </div>
+                </form>
+
+                <div class="medication-list-container">
+                  <h4>Current Medications</h4>
+                  <div id="medicationList" class="medication-list">
+                    <!-- Medications will be listed here -->
+                    <div class="empty-state" id="emptyMedicationState">
+                      <i class="fas fa-prescription-bottle empty-icon"></i>
+                      <p>You haven't added any medications yet.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Medication Reminders -->
+              <div class="reminders-section">
+                <h3><i class="fas fa-bell"></i> Medication Reminders</h3>
+                
+                <form id="reminderForm">
+                  <div class="form-group">
+                    <label for="reminderMedication">
+                      <i class="fas fa-prescription-bottle-alt"></i> Medication
+                    </label>
+                    <select id="reminderMedication" required>
+                      <option value="" disabled selected>Select a medication</option>
+                      <!-- Options will be populated from medication list -->
+                    </select>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group half">
+                      <label for="reminderTime">
+                        <i class="fas fa-clock"></i> Time
+                      </label>
+                      <input type="time" id="reminderTime" required>
+                    </div>
+
+                    <div class="form-group half">
+                      <label for="reminderRepeat">
+                        <i class="fas fa-redo"></i> Repeat
+                      </label>
+                      <select id="reminderRepeat" required>
+                        <option value="daily">Daily</option>
+                        <option value="weekdays">Weekdays</option>
+                        <option value="weekends">Weekends</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group custom-days" id="customDays" style="display: none;">
+                    <label>
+                      <i class="fas fa-calendar-week"></i> Select Days
+                    </label>
+                    <div class="day-selector">
+                      <div class="day-item">
+                        <input type="checkbox" id="day-mon" value="mon">
+                        <label for="day-mon">Mon</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-tue" value="tue">
+                        <label for="day-tue">Tue</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-wed" value="wed">
+                        <label for="day-wed">Wed</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-thu" value="thu">
+                        <label for="day-thu">Thu</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-fri" value="fri">
+                        <label for="day-fri">Fri</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-sat" value="sat">
+                        <label for="day-sat">Sat</label>
+                      </div>
+                      <div class="day-item">
+                        <input type="checkbox" id="day-sun" value="sun">
+                        <label for="day-sun">Sun</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="button-group">
+                    <button type="submit" id="addReminderBtn">
+                      <i class="fas fa-plus-circle"></i> Add Reminder
+                    </button>
+                    <button type="button" id="clearReminderFormBtn">
+                      <i class="fas fa-undo"></i> Clear
+                    </button>
+                  </div>
+                </form>
+
+                <div class="reminders-list-container">
+                  <h4>Upcoming Reminders</h4>
+                  <div id="remindersList" class="reminders-list">
+                    <!-- Reminders will be listed here -->
+                    <div class="empty-state" id="emptyRemindersState">
+                      <i class="fas fa-bell-slash empty-icon"></i>
+                      <p>You haven't set any reminders yet.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information card -->
+        <div class="info-card">
+          <h3><i class="fas fa-info-circle"></i> About MediRecommend</h3>
+          <p>MediRecommend provides medication recommendations and personal medication tracking tools. This application is for informational purposes only and should not replace professional medical advice.</p>
+          <p>Always consult with a healthcare provider before starting or changing medication.</p>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2023 MediRecommend. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Privacy Policy</a>
+        <a href="#" class="footer-link">Terms of Service</a>
+        <a href="#" class="footer-link">Contact Us</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/autocompleteData.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/drugDatabase.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/patientApp.js') }}"></script>
+</body>
+</html>
